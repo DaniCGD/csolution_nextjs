@@ -120,27 +120,39 @@ export const transferir = async (monto, cuentaDemo) => {
     
     //const nonce = await window.ethereum.request({ method: 'eth_getTransactionCount', params: [cuenta, 'latest'] });
     //console.log(nonce);
-    const account = await window.ethereum.selectedAddress;
+    const account = await window.ethereum.selectedAddress
     const gasPrice = await window.ethereum.request({ method: 'eth_gasPrice' });
-    const gasTop = '0x' + await web3.utils.toWei(monto.toString(), 'ether');
-    const transfer = '0x' + web3.utils.toWei(monto.toString(), 'ether');
+    const gasTop = await web3.eth.getBlock('latest');//parseInt(await window.ethereum.request({ method: 'eth_gasLimit' }));
+    console.log("gasLimit: " , gasTop.gasLimit);
+    const Top = '0x' +  gasTop.gasLimit.toString(16);
+    const transfervalue = parseInt( web3.utils.toWei(monto, 'ether'));
+    console.log('Monto',transfervalue)
+    const transfer = '0x' +  transfervalue. toString(16);
+    console.log('transfer',transfer)
     
     const params = [
       {
-        from: account,
-        to: cuentaDemo,
-        gas: gasPrice,
-        gasPrice: gasTop,
-        value: transfer, 
-        data:
-          '0xd46e8dd67c5d32be8d46e8dd67c5d32be8058bb8eb970870f072445675058bb8eb970870f072445675'
+        'from': account,
+        'to': cuentaDemo,
+        'gas': Top,
+        'gasPrice': gasPrice,//'0x6691B7',
+        'value': transfer //'0x1BC16D674EC80000',
       }
     ];
     console.log('Params', params);
   
     try {
-      const result = await window.ethereum.request({ method: 'eth_signTransaction', params });
-      console.log('Transacción firmada correctamente:', result);
+      window.ethereum
+        .request({
+          method: 'eth_sendTransaction', 
+          params 
+        })
+        .then((result) => {
+          console.log('Transacción firmada correctamente:', result);
+        })
+        .catch((error) => {
+          console.log(error);
+        })
 
       // Luego puedes enviar la transacción si es necesario
       // const txHash = await window.ethereum.request({ method: 'eth_sendTransaction', params: [result.raw] });
