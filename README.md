@@ -32,7 +32,7 @@ Third, install [ganche](https://trufflesuite.com/ganache/) in the last version w
 Fourth, install [react](https://es.reactjs.org/) to creat the frontend for this web aplication
 
 ```
-sudo npm install -g create-react-app
+npm install -g create-react-app
 ```
 
 ## Getting Started
